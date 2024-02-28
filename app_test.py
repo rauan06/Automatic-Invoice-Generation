@@ -2,13 +2,12 @@ import requests
 
 url = 'http://127.0.0.1:5000/'
 data = {
-    'duedate': 'September 1, 2014',
+    'duedate': 'March 27, 2034',
     'from_addr': {
-        'addr1': 'Hamilton, New York',
-        'addr2': 'Sunnyville, CA 12345',
+        'addr1': 'Fiftyville, ABC354',
+        'addr2': 'New York, CA 12345',
         'company_name': 'Python Tip'
     },
-    'invoice_number': 156,
     'items': [{
         'charge': 500.0,
         'title': 'Brochure design'
@@ -28,3 +27,7 @@ data = {
         'person_name': 'Yasoob Khalid'
     }
     }
+
+html = requests.post(url, json=data)
+with open('invoice.pdf', 'wb') as f:
+    f.write(html.content)

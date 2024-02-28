@@ -8,20 +8,22 @@ from random import randrange
 
 app = Flask(__name__)
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['GET', 'POST'])
 def hello_world():
-    posted_data = request.get_json() or {}
+    if request.is_json:
+        posted_data = request.get_json()
+    else:
+        posted_data = {}
     today = datetime.today().strftime("%B %d, %Y")
-    invoice_number = randrange(1000, 9000, 2)
     default_data = {
         'duedate': 'January 1, 2034',
         'from_addr': {
-        'addr1': '12345 Sunny Road',
-        'addr2': 'Sunnyville, CA 12345',
-        'company_name': 'Python Tip'
+            'addr1': '12345 Sunny Road',
+            'addr2': 'Sunnyville, CA 12345',
+            'company_name': 'Python Tip'
         },
-        'invoice_number': 123,
-        'items':[{
+        'invoice_number': randrange(1000,9000,1),
+        'items': [{
             'charge': 300.0,
             'title': 'website design'
             },
@@ -45,8 +47,9 @@ def hello_world():
     from_addr = posted_data.get('from_addr', default_data['from_addr'])
     to_addr = posted_data.get('to_addr', default_data['to_addr'])
     invoice_number = posted_data.get('invoice_number',
-    default_data['invoice_number'])
+                                    default_data['invoice_number'])
     items = posted_data.get('items', default_data['items'])
+
     total = sum(item['charge'] for item in items)
 
     rendered =  render_template('invoice.html',
@@ -57,13 +60,16 @@ def hello_world():
                             total = total,
                             invoice_number = invoice_number,
                             duedate = duedate)
+                            
     html = HTML(string=rendered)
     rendered_pdf = html.write_pdf()
 
     return send_file(
-            io.BytesIO(rendered_pdf),
-            attachment_filename='invoice.pdf'
-            )
+        io.BytesIO(rendered_pdf),
+        as_attachment=True,
+        download_name='invoice.pdf'
+    )
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

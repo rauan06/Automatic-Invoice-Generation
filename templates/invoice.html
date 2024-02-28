@@ -108,9 +108,9 @@
                                 <img src="https://imgur.com/edx5Sb0.png" style="height: 100px;">
                             </td>
                             <td>
-                                Invoice #: {{invoice}}<br>
+                                Invoice #: {{invoice_number}}<br>
                                 Created: {{date}}<br>
-                                Due: {{due}}
+                                Due: {{duedate}}
                             </td>
                         </tr>
                     </table>
@@ -121,14 +121,14 @@
                     <table>
                         <tr>
                             <td>
-                                {{delivery_company}}<br>
-                                {{delivery_adress1}}<br>
-                                {{delivery_adress2}}
+                                {{from_addr['company_name']}}<br>
+                                {{from_addr['addr1']}}<br>
+                                {{from_addr['addr2']}}
                             </td>
                             <td>
-                                {{reciever_company}}<br>
-                                {{reciever_name}}<br>
-                                {{reciever_email}}
+                                {{to_addr['company_name']}}<br>
+                                {{to_addr['person_name']}}<br>
+                                {{to_addr['person_email']}}
                             </td>
                         </tr>
                     </table>
@@ -142,20 +142,20 @@
                     Price
                 </td>
             </tr>
-            {% for product in products %}
+            {% for product in items %}
             <tr class="item">
                 <td>
                     {{product['title']}}
                 </td>
                 <td>
-                    ${{product['price']}}
+                    ${{product['charge']}}
                 </td>
             </tr>
             {% endfor %}
             <tr class="total">
                 <td></td>
                 <td>
-                    Total: $385.00
+                    Total: ${{total}}
                 </td>
             </tr>
         </table>
